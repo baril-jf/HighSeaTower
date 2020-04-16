@@ -14,15 +14,22 @@ public class Controleur {
         jeu.draw(context);
     }
 
-    void update(double deltaTime) {
-        jeu.update(deltaTime);
+    void update(double deltaTime, boolean deroule) {
+        jeu.update(deltaTime, deroule);
     }
 
     void jump() {
         jeu.jump();
     }
 
-    void move(String side) {jeu.move(side);}
+    void move(String side) { jeu.move(side);}
 
-    void derouler(int vitesse) {jeu.derouler(vitesse); }
+    boolean checkGameOver(){
+        if(jeu.gameOver){
+            return true;
+        }else {
+            return false;
+        }
+    }
+    void activerDebug() {jeu.activerDebug();}
 }

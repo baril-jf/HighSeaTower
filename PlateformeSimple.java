@@ -12,8 +12,13 @@ public class PlateformeSimple extends Plateforme {
 
     @Override
     public void draw(GraphicsContext context, double fenetreY) {;
-        double yAffiche = y - fenetreY;
+        double yAffiche = this.y - fenetreY;
         context.setFill(couleur);
-        context.fillRect(x, yAffiche, largeur, hauteur);
+        context.fillRect(x, yAffiche, this.largeur, this.hauteur);
+    }
+    public void drawDebug(GraphicsContext context, double fenetreY) {
+        double yAffiche = this.y - fenetreY;
+        context.setFill(Color.YELLOW);
+        context.fillRect(this.x, yAffiche, this.largeur, this.hauteur);
     }
 }

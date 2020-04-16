@@ -1,24 +1,27 @@
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.TimerTask;
 
+import static java.util.logging.Logger.global;
+
 public class HighSeaTower extends Application {
 
     public static final int WIDTH = 350, HEIGHT = 480;
-
-    /**
-     * @param args the command line arguments
-     */
+    private boolean deroule = false;
+    private boolean modeDebug = false;
     public static void main(String[] args) {
         launch(args);
     }
@@ -30,46 +33,42 @@ public class HighSeaTower extends Application {
         Scene scene = new Scene(root, WIDTH, HEIGHT);
 
         Canvas canvas = new Canvas(WIDTH, HEIGHT);
+
         root.getChildren().add(canvas);
 
         GraphicsContext context = canvas.getGraphicsContext2D();
 
         Controleur controleur = new Controleur();
 
-        //ArrayList<Plateforme> plateformes = new ArrayList<Plateforme>();
-//
-//        scene.setOnKeyPressed((e) -> {
-//            switch (e.getCode()) {
-//                case LEFT:
-//                    controleur.gauche();
-//                    break;
-//                case RIGHT:
-//                    controleur.droite();
-//                    break;
-//                case UP:
-//                    controleur.jump();
-//                    break;
-//                case ESCAPE:
-//                    Platform.exit();
-//                case T:
-//                    controleur.debug() ou debug = true
-//                }
-//            }
-//        }
-
-        scene.setOnKeyPressed((value) -> {
+        scene.setOnKeyPressed((value) -> { //Il faut que ça parte uniquement si up, left, right ou space sont touchées, là c'est n'importe quelle touche
 
             if (value.getCode() == KeyCode.LEFT) {
                 controleur.move("gauche");
+                deroule = !modeDebug;
+                controleur.jeu.getjelly().ay = 1200;
             }
             if (value.getCode() == KeyCode.RIGHT) {
                 controleur.move("droite");
+                deroule = !modeDebug;
+                controleur.jeu.getjelly().ay = 1200;
             }
             if (value.getCode() == KeyCode.SPACE || value.getCode() == KeyCode.UP) {
                 controleur.jump();
+                deroule = !modeDebug;
+                controleur.jeu.getjelly().ay = 1200;
+            } if (value.getCode() == KeyCode.ESCAPE) {
+                Platform.exit();
+            }
+            if (value.getCode() == KeyCode.T){
+                modeDebug = !modeDebug;
+                controleur.activerDebug();
+                if(modeDebug){
+                    deroule = false;
+                }else{
+                    deroule = true;
+                }
             }
         });
-
         AnimationTimer timer = new AnimationTimer() {
             private long lastTime = 0;
 
@@ -79,18 +78,22 @@ public class HighSeaTower extends Application {
                     lastTime = now;
                     return;
                 }
-
                 double deltaTime = (now - lastTime) * 1e-9;
-                controleur.update(deltaTime);
+
+                controleur.update(deltaTime,deroule);
                 controleur.draw(context);
-                //controleur.derouler(1);
                 lastTime = now;
+                if (controleur.checkGameOver()){
+                    controleur.jeu = new Jeu();
+                    deroule = false;
+                }
             }
         };
-        
         timer.start();
         primaryStage.setTitle("High Sea Tower");
         primaryStage.setScene(scene);
+        primaryStage.getIcons().add(new Image("/jellyfish1.png")); // Afficher l'icÃ´ne de la mÃ©duse sur la fenÃªtre
+        primaryStage.setResizable(false); // Pour que le fenÃªtre ne puisse pas Ãªtre resizable
         primaryStage.show();
     }
 }

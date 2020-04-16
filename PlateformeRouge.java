@@ -9,8 +9,13 @@ public class PlateformeRouge  extends Plateforme {
 
     @Override
     public void draw(GraphicsContext context, double fenetreY) {
-        double yAffiche = y - fenetreY;
-        context.setFill(couleur);
-        context.fillRect(x, yAffiche, largeur, hauteur);
+        double yAffiche = this.y - fenetreY;
+        context.setFill(this.couleur);
+        context.fillRect(this.x, yAffiche, this.largeur, this.hauteur);
+    }
+    public void drawDebug(GraphicsContext context, double fenetreY) {
+        double yAffiche = this.y - fenetreY;
+        context.setFill(Color.YELLOW);
+        context.fillRect(x, yAffiche, this.largeur, this.hauteur);
     }
 }
